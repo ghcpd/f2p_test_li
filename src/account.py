@@ -84,8 +84,32 @@ class AccountManager:
         """Get total balance of all accounts"""
         return sum(acc.balance for acc in self.accounts if acc.is_active)
     
+    def delete_account(self, account_id: int) -> bool:
+        """
+        Delete an account by ID
+        
+        Args:
+            account_id: The ID of the account to delete
+            
+        Returns:
+            bool: True if account was deleted successfully, False if account not found
+            
+        Raises:
+            ValueError: If account has a non-zero balance
+        """
+        account = self.get_account_by_id(account_id)
+        if account is None:
+            return False
+            
+        # Check if account has zero balance before deletion
+        if account.balance != Decimal('0'):
+            raise ValueError(f"Cannot delete account with non-zero balance: ${account.balance}")
+            
+        # Remove account from the list
+        self.accounts = [acc for acc in self.accounts if acc.id != account_id]
+        return True
+    
     # TODO: Need to add the following features:
-    # - delete_account(account_id): Delete account
     # - update_account(account_id, **kwargs): Update account information
     # - get_accounts_by_type(account_type): Filter accounts by type
     # - transfer_funds(from_id, to_id, amount): Transfer between accounts

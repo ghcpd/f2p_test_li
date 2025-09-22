@@ -84,3 +84,51 @@ class TestAccountManager:
         self.manager.create_account("Account 2", AccountType.SAVINGS, Decimal('2000'))
         total = self.manager.get_total_balance()
         assert total == Decimal('3000')
+    
+    def test_delete_account_success(self):
+        """Test successful account deletion with zero balance"""
+        account = self.manager.create_account("Test Account", AccountType.CHECKING)
+        account_id = account.id
+        
+        # Verify account exists
+        assert self.manager.get_account_by_id(account_id) is not None
+        
+        # Delete account (zero balance should allow deletion)
+        result = self.manager.delete_account(account_id)
+        assert result is True
+        
+        # Verify account no longer exists
+        assert self.manager.get_account_by_id(account_id) is None
+        assert len(self.manager.accounts) == 0
+    
+    def test_delete_account_not_found(self):
+        """Test deleting non-existent account"""
+        # Try to delete account that doesn't exist
+        result = self.manager.delete_account(999)
+        assert result is False
+    
+    def test_delete_account_with_balance_fails(self):
+        """Test that deleting account with non-zero balance raises error"""
+        account = self.manager.create_account("Test Account", AccountType.CHECKING, Decimal('100'))
+        account_id = account.id
+        
+        # Try to delete account with balance
+        with pytest.raises(ValueError, match="Cannot delete account with non-zero balance"):
+            self.manager.delete_account(account_id)
+        
+        # Verify account still exists
+        assert self.manager.get_account_by_id(account_id) is not None
+    
+    def test_delete_account_after_zeroing_balance(self):
+        """Test deleting account after withdrawing all funds"""
+        account = self.manager.create_account("Test Account", AccountType.CHECKING, Decimal('100'))
+        account_id = account.id
+        
+        # Withdraw all funds to zero the balance
+        account.withdraw(Decimal('100'))
+        assert account.balance == Decimal('0')
+        
+        # Now deletion should succeed
+        result = self.manager.delete_account(account_id)
+        assert result is True
+        assert self.manager.get_account_by_id(account_id) is None
