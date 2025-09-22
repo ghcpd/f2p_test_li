@@ -1,0 +1,37 @@
+# Personal Finance Management System Dependencies File
+# Contains packages required for basic functionality, intentionally missing some production-required packages
+
+# Core Framework
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+
+# Data Validation and Serialization
+pydantic>=2.4.0
+
+# Testing Framework
+pytest>=7.4.0
+pytest-cov>=4.0.0
+pytest-asyncio>=0.21.0
+
+# HTTP Client (for API testing)
+httpx>=0.25.0
+
+# TODO: Dependencies that may be needed for production environment:
+# - sqlalchemy (Database ORM)
+# - alembic (Database migration)
+# - psycopg2-binary (PostgreSQL driver)
+# - python-jose[cryptography] (JWT authentication)
+# - passlib[bcrypt] (Password hashing)
+# - python-multipart (File upload support)
+# - redis (Caching)
+# - celery (Asynchronous tasks)
+# - pydantic-settings (Configuration management)
+# - python-dotenv (Environment variables)
+# - loguru (Advanced logging)
+# - black (Code formatting)
+# - flake8 (Code linting)
+# - mypy (Type checking)
+# - pre-commit (Git hooks)
+# - gunicorn (WSGI server)
+# - prometheus-client (Monitoring)
+# - structlog (Structured logging)
